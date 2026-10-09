@@ -22,8 +22,19 @@ def bubble_sort(arr):
     return elapsed_time
 
 def selection_sort(arr):
-    time = 0 #initialize time variable should chnage by using time.time() function
-    print(f"Sorting array of size {len(arr)} using selection sort in time: {time}")
+    start_time = time.time()
+    # Implementation for selection sort
+    for i in range(len(arr)):
+        min_idx = i
+        for j in range(i + 1, len(arr)):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        if min_idx != i:
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    end_time = time.time()
+    timee = end_time - start_time
+    print(f"Sorting array of size {len(arr)} using selection sort in time: {timee}")
+    return timee
 
 def insertion_sort(arr):
     s_time = time.time()
@@ -38,12 +49,10 @@ def insertion_sort(arr):
     e_time = time.time()
     elapsed_time= e_time - s_time
     print(f"Sorting array of size {len(arr)} using insertion sort in time: {time}")
-    return elapsed_time
-
 
 def draw_graph(N_sizes, bubble_sort, selection_sort, insertion_sort):
     # Create the figure
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(10, 5)) 
 
     # Plot each sorting algorithm
     plt.plot(
@@ -96,4 +105,26 @@ def draw_graph(N_sizes, bubble_sort, selection_sort, insertion_sort):
     plt.show()
 
 def main():
-    pass
+    N_sizes = [10000, 20000, 30000, 40000, 50000]
+    bubble_sort_times = []
+    selection_sort_times = []
+    insertion_sort_times = []
+
+    for size in N_sizes:
+        arr = generate_random_array(size)
+
+        # Measure bubble sort time
+        bubble_start_time = bubble_sort(arr.copy())
+        bubble_sort_times.append(bubble_start_time * 1e6)  # Convert to microseconds
+
+        # Measure selection sort time
+        selection_start_time = selection_sort(arr.copy())
+        selection_sort_times.append(selection_start_time * 1e6)  # Convert to microseconds
+
+        # Measure insertion sort time
+        insertion_start_time = insertion_sort(arr.copy())
+        insertion_sort_times.append(insertion_start_time * 1e6)  # Convert to microseconds
+
+    draw_graph(N_sizes, bubble_sort_times, selection_sort_times, insertion_sort_times)
+
+main()
