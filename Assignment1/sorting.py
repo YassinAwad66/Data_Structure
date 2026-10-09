@@ -48,7 +48,7 @@ def insertion_sort(arr):
         arr[j+1]=key 
     e_time = time.time()
     elapsed_time= e_time - s_time
-    print(f"Sorting array of size {len(arr)} using insertion sort in time: {time}")
+    print(f"Sorting array of size {len(arr)} using insertion sort in time: {elapsed_time}")
 
 def draw_graph(N_sizes, bubble_sort, selection_sort, insertion_sort):
     # Create the figure
