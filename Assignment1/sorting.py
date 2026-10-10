@@ -49,6 +49,7 @@ def insertion_sort(arr):
     e_time = time.time()
     elapsed_time= e_time - s_time
     print(f"Sorting array of size {len(arr)} using insertion sort in time: {elapsed_time}")
+    return elapsed_time
 
 def draw_graph(N_sizes, bubble_sort, selection_sort, insertion_sort):
     # Create the figure
@@ -81,7 +82,7 @@ def draw_graph(N_sizes, bubble_sort, selection_sort, insertion_sort):
 
     # Labels
     plt.xlabel("Input size (N)", fontweight="bold")
-    plt.ylabel("Execution time (microsec)", fontweight="bold")
+    plt.ylabel("Execution time (sec)", fontweight="bold")
 
     # Title
     plt.title("Sorting Algorithms Performance")
@@ -93,10 +94,10 @@ def draw_graph(N_sizes, bubble_sort, selection_sort, insertion_sort):
     plt.legend(loc="upper center", ncol=3, frameon=False)
 
     # Format x-axis
-    plt.xticks([0, 25000, 50000, 75000, 100000])
+    plt.xticks([0, 10000, 20000, 30000, 40000, 50000], ["0", "10k", "20k", "30k", "40k", "50k"])
 
     # Format y-axis
-    plt.ylim(0, 20000000)
+    plt.ylim(0, 100)
 
     # Make layout clean
     plt.tight_layout()
@@ -115,15 +116,15 @@ def main():
 
         # Measure bubble sort time
         bubble_start_time = bubble_sort(arr.copy())
-        bubble_sort_times.append(bubble_start_time * 1e6)  # Convert to microseconds
+        bubble_sort_times.append(bubble_start_time)
 
         # Measure selection sort time
         selection_start_time = selection_sort(arr.copy())
-        selection_sort_times.append(selection_start_time * 1e6)  # Convert to microseconds
+        selection_sort_times.append(selection_start_time)
 
         # Measure insertion sort time
         insertion_start_time = insertion_sort(arr.copy())
-        insertion_sort_times.append(insertion_start_time * 1e6)  # Convert to microseconds
+        insertion_sort_times.append(insertion_start_time)
 
     draw_graph(N_sizes, bubble_sort_times, selection_sort_times, insertion_sort_times)
 
