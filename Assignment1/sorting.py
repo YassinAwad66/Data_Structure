@@ -7,7 +7,6 @@ class OnSquareSorting:
         return [random.randint(0, 100000) for _ in range(size)]
 
     def bubble_sort(arr):
-        s_time = time.time()
         n=len(arr)
         for i in range(n):
             swapped= False
@@ -17,14 +16,8 @@ class OnSquareSorting:
                     swapped = True
             if not swapped:
                 break    
-        e_time = time.time()
-        elapsed_time= e_time - s_time
-        print(f"Sorting array of size {len(arr)} using bubble sort in time: {elapsed_time}")
-        return elapsed_time
 
     def selection_sort(arr):
-        start_time = time.time()
-        # Implementation for selection sort
         for i in range(len(arr)):
             min_idx = i
             for j in range(i + 1, len(arr)):
@@ -32,13 +25,8 @@ class OnSquareSorting:
                     min_idx = j
             if min_idx != i:
                 arr[i], arr[min_idx] = arr[min_idx], arr[i]
-        end_time = time.time()
-        timee = end_time - start_time
-        print(f"Sorting array of size {len(arr)} using selection sort in time: {timee}")
-        return timee
 
     def insertion_sort(arr):
-        s_time = time.time()
         n=len(arr)
         for i in range(1,n):
             key=arr[i]
@@ -47,14 +35,10 @@ class OnSquareSorting:
                 arr[j+1]=arr[j]
                 j-=1
             arr[j+1]=key 
-        e_time = time.time()
-        elapsed_time= e_time - s_time
-        print(f"Sorting array of size {len(arr)} using insertion sort in time: {elapsed_time}")
-        return elapsed_time
 
     @staticmethod
     def draw_graph(N_sizes, sorting_times):
-        plt.figure(figsize=(10, 5))
+        plt.figure(figsize=(10, 6))
 
         for algorithm_name, execution_times in sorting_times.items():
             plt.plot(
@@ -65,9 +49,10 @@ class OnSquareSorting:
                 label=algorithm_name
             )
 
+        plt.yscale("log")
         plt.xlabel("Input size (N)", fontweight="bold")
-        plt.ylabel("Execution time (sec)", fontweight="bold")
-        plt.title("Sorting Algorithms Performance")
+        plt.ylabel("Execution time (msec)", fontweight="bold")
+        plt.title("Sorting Algorithms Performance (logarithmic scale)")
         plt.grid(True, alpha=0.3)
         plt.legend(loc="best", frameon=False)
         plt.xticks(N_sizes)
@@ -85,16 +70,28 @@ def main():
         arr = OnSquareSorting.generate_random_array(size)
 
         # Measure bubble sort time
-        bubble_start_time = OnSquareSorting.bubble_sort(arr.copy())
-        bubble_sort_times.append(bubble_start_time)
+        candidate = arr.copy()
+        start_time = time.perf_counter()
+        OnSquareSorting.bubble_sort(candidate)
+        elapsed_time = (time.perf_counter() - start_time) * 1000
+        print(f"Sorting array of size {len(candidate)} using bubble sort in time: {elapsed_time}")
+        bubble_sort_times.append(elapsed_time)
 
         # Measure selection sort time
-        selection_start_time = OnSquareSorting.selection_sort(arr.copy())
-        selection_sort_times.append(selection_start_time)
+        candidate = arr.copy()
+        start_time = time.perf_counter()
+        OnSquareSorting.selection_sort(candidate)
+        elapsed_time = (time.perf_counter() - start_time) * 1000
+        print(f"Sorting array of size {len(candidate)} using selection sort in time: {elapsed_time}")
+        selection_sort_times.append(elapsed_time)
 
         # Measure insertion sort time
-        insertion_start_time = OnSquareSorting.insertion_sort(arr.copy())
-        insertion_sort_times.append(insertion_start_time)
+        candidate = arr.copy()
+        start_time = time.perf_counter()
+        OnSquareSorting.insertion_sort(candidate)
+        elapsed_time = (time.perf_counter() - start_time) * 1000
+        print(f"Sorting array of size {len(candidate)} using insertion sort in time: {elapsed_time}")
+        insertion_sort_times.append(elapsed_time)
 
     OnSquareSorting.draw_graph(
         N_sizes,

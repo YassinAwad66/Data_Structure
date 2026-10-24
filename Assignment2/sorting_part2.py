@@ -1,4 +1,4 @@
-from ..Assignment1.sorting import OnSquareSorting
+from Assignment1.sorting import OnSquareSorting
 import time
 import random
 
@@ -23,15 +23,10 @@ def build_max_heap(arr):
         max_heap(arr, i)
 
 def heap_sort(arr):
-    start_time = time.time()
     build_max_heap(arr)
     for i in range(len(arr)-1, 0, -1):
         arr[i], arr[0] = arr[0], arr[i]
         max_heap(arr, 0, i)
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"Sorting array of size {len(arr)} using heap sort in time: {elapsed_time}")
-    return elapsed_time
 
 def randomized_partition(arr, low, high):
     pivot_index = random.randint(low, high)
@@ -50,6 +45,7 @@ def randomized_quick_sort(arr, low, high):
         pi = randomized_partition(arr, low, high)
         randomized_quick_sort(arr, low, pi - 1)
         randomized_quick_sort(arr, pi + 1, high)
+
 def merge(left ,right):
     result=[]
     i=j=0
@@ -63,6 +59,7 @@ def merge(left ,right):
     result.extend(left[i:])
     result.extend(right[j:])    
     return result
+
 def merge_sort(arr):
     if(len(arr)<=1):
         return arr
@@ -70,20 +67,11 @@ def merge_sort(arr):
     left=merge_sort(arr[:mid])
     right=merge_sort(arr[mid:])
     return merge(left, right)
-def insertion_sort(arr1):
-        arr=arr1.copy()
-        n=len(arr)
-        for i in range(1,n):
-            key=arr[i]
-            j=i-1
-            while j>=0 and arr[j]>key:
-                arr[j+1]=arr[j]
-                j-=1
-            arr[j+1]=key 
-        return arr
+
 def hybrid_merge_sort(arr,cutoff=16):
     if len(arr) <= cutoff:
-        return insertion_sort(arr)
+        OnSquareSorting.selection_sort(arr)
+        return arr
     mid = len(arr) // 2
     left = hybrid_merge_sort(arr[:mid], cutoff)
     right = hybrid_merge_sort(arr[mid:], cutoff)
@@ -91,20 +79,19 @@ def hybrid_merge_sort(arr,cutoff=16):
 
 
 def main():
-    N_sizes = [100, 500, 1000, 2000, 5000]
-    sorting_times = {
-        "Bubble sort": [],
-        "Selection sort": [],
-        "Insertion sort": [],
-        "Heap sort": [],
-        "Randomized quick sort": [],
-    }
+    N_sizes = [10000, 20000, 30000, 40000, 50000]
     sorters = {
         "Bubble sort": OnSquareSorting.bubble_sort,
         "Selection sort": OnSquareSorting.selection_sort,
         "Insertion sort": OnSquareSorting.insertion_sort,
         "Heap sort": heap_sort,
+        "Randomized quick sort": lambda arr: randomized_quick_sort(
+            arr, 0, len(arr) - 1
+        ),
+        "Merge sort": merge_sort,
+        "Hybrid merge sort": hybrid_merge_sort,
     }
+    sorting_times = {algorithm_name: [] for algorithm_name in sorters}
 
     for size in N_sizes:
         arr = OnSquareSorting.generate_random_array(size)
@@ -112,22 +99,18 @@ def main():
 
         for algorithm_name, sorter in sorters.items():
             candidate = arr.copy()
-            elapsed_time = sorter(candidate)
+            start_time = time.perf_counter()
+            sorted_candidate = sorter(candidate)
+            elapsed_time = (time.perf_counter() - start_time)*1000
+            if sorted_candidate is not None:
+                candidate = sorted_candidate
             if candidate != expected:
                 raise RuntimeError(f"{algorithm_name} produced an incorrectly sorted array")
             sorting_times[algorithm_name].append(elapsed_time)
-
-        candidate = arr.copy()
-        start_time = time.perf_counter()
-        randomized_quick_sort(candidate, 0, len(candidate) - 1)
-        elapsed_time = time.perf_counter() - start_time
-        if candidate != expected:
-            raise RuntimeError("Randomized quick sort produced an incorrectly sorted array")
-        print(
-            f"Sorting array of size {len(arr)} using randomized quick sort "
-            f"in time: {elapsed_time}"
-        )
-        sorting_times["Randomized quick sort"].append(elapsed_time)
+            print(
+                f"Sorting array of size {len(candidate)} using {algorithm_name.lower()} "
+                f"in time: {elapsed_time}"
+            )
 
     OnSquareSorting.draw_graph(N_sizes, sorting_times)
 
